@@ -98,6 +98,9 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(glucoseDataReceiver);
     }
 
+    /**
+     * 用于接收位置服务状态更改的广播接收器（BroadcastReceiver）。它监听与位置服务相关的广播事件，主要用于检测用户是否启用或禁用了设备的位置服务
+     */
     private final BroadcastReceiver locationServiceStateReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -109,7 +112,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
+    /**
+     * 用于接收蓝牙血压测量数据的广播事件
+     */
     private final BroadcastReceiver bloodPressureDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -120,7 +125,9 @@ public class MainActivity extends AppCompatActivity {
             measurementValue.setText(String.format(Locale.ENGLISH, "%.0f/%.0f %s, %.0f bpm\n%s\n\nfrom %s", measurement.systolic, measurement.diastolic, measurement.isMMHG ? "mmHg" : "kpa", measurement.pulseRate, dateFormat.format(measurement.timestamp), peripheral.getName()));
         }
     };
-
+    /**
+     * 接收蓝牙温度测量数据的广播事件
+     */
     private final BroadcastReceiver temperatureDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -131,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
             measurementValue.setText(String.format(Locale.ENGLISH, "%.1f %s (%s)\n%s\n\nfrom %s", measurement.temperatureValue, measurement.unit == TemperatureUnit.Celsius ? "celsius" : "fahrenheit", measurement.type, dateFormat.format(measurement.timestamp), peripheral.getName()));
         }
     };
-
+    /**
+     * 用于接收心率测量数据的广播事件
+     */
     private final BroadcastReceiver heartRateDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -141,7 +150,9 @@ public class MainActivity extends AppCompatActivity {
             measurementValue.setText(String.format(Locale.ENGLISH, "%d bpm", measurement.pulse));
         }
     };
-
+    /**
+     * 接收脉搏血氧测量数据的广播事件
+     */
     private final BroadcastReceiver pulseOxDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -156,7 +167,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
+    /**
+     * 体重广播
+     */
     private final BroadcastReceiver weightDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -167,7 +180,9 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
+    /**
+     * 葡萄糖测量数据的广播事件
+     */
     private final BroadcastReceiver glucoseDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -179,11 +194,19 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    /**
+     * 于获取特定蓝牙外围设备（peripheral）的实例
+     * @param peripheralAddress
+     * @return
+     */
     private BluetoothPeripheral getPeripheral(String peripheralAddress) {
         BluetoothCentralManager central = BluetoothHandler.getInstance(getApplicationContext()).central;
         return central.getPeripheral(peripheralAddress);
     }
 
+    /**
+     * 检查权限
+     */
     private void checkPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             String[] missingPermissions = getMissingPermissions(getRequiredPermissions());
@@ -216,6 +239,9 @@ public class MainActivity extends AppCompatActivity {
         } else return new String[]{Manifest.permission.ACCESS_COARSE_LOCATION};
     }
 
+    /**
+     * 低于android12的权限检查
+     */
     private void permissionsGranted() {
         // Check if Location services are on because they are required to make scanning work for SDK < 31
         int targetSdkVersion = getApplicationInfo().targetSdkVersion;
@@ -228,6 +254,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 用于检查设备的位置服务是否已启用
+     * @return
+     */
     private boolean areLocationServicesEnabled() {
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null) {
